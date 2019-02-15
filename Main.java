@@ -22,7 +22,7 @@ public class Main extends JFrame{
     public Main(){
 
         setTitle( "Guitar Zero Live (SLASH MODE)" );
-        setContentPane( new JLabel( new ImageIcon( "/Users/sergiuivanov/Desktop/ProjectGroupQ/src/com/company/guitar.jpg" ) ) );
+        setContentPane( new JLabel( new ImageIcon( "guitar.png" ) ) );
         setLayout( null );
 
         btnExit.setBounds  (  50, 200,  100, 130 ); add( btnExit  );
