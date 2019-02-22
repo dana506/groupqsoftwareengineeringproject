@@ -1,15 +1,12 @@
 
-import java.awt.Color;
-import java.awt.TextField;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import java.util.Arrays;
+
+import java.io.IOException;
 
 public class Main extends JFrame{
-
 
     final Exit btnExit = new Exit("exit.png");
     final Play btnPlay = new Play("play.png");
@@ -17,10 +14,10 @@ public class Main extends JFrame{
     final Store btnStore = new Store("store.png");
     final Tutorial btnTutorial = new Tutorial("tutorial.png");
 
+    GuitarController guitarController;
 
     //constructor
     public Main(){
-
         setTitle( "Guitar Zero Live (SLASH MODE)" );
         setContentPane( new JLabel( new ImageIcon( "guitar.png" ) ) );
         setLayout( null );
@@ -30,7 +27,21 @@ public class Main extends JFrame{
         btnSelect.setBounds  (  350, 200,  100, 130 ); add( btnSelect  );
         btnStore.setBounds  (  500, 200,  100, 130 ); add( btnStore  );
         btnTutorial.setBounds  (  650, 200,  100, 130 ); add( btnTutorial  );
-
+        
+        try {
+        	guitarController = new GuitarController();
+        }
+        catch(IOException e)
+        {
+        	System.out.println("No guitar controller found");
+        	System.exit(-1);
+        }
+        
+        GuitarState state;
+        while(true) {
+        	state = guitarController.getState();
+        	System.out.println(Arrays.toString(state.getFretButtons()));
+        }
     }
 
 
