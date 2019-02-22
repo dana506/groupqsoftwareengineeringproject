@@ -6,6 +6,11 @@ import java.util.Arrays;
 
 import java.io.IOException;
 
+/**
+ * 
+ * @author Sergiu Ivanov
+ *
+ */
 public class Main extends JFrame{
 
     final Exit btnExit = new Exit("exit.png");

@@ -3,7 +3,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
+/**
+ * 
+ * @author Sergiu Ivanov
+ *
+ */
 public class Exit extends JButton {
 
     public Exit(String s){
