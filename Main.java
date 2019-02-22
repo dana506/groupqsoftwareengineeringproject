@@ -36,12 +36,6 @@ public class Main extends JFrame{
         	System.out.println("No guitar controller found");
         	System.exit(-1);
         }
-        
-        GuitarState state;
-        while(true) {
-        	state = guitarController.getState();
-        	System.out.println(Arrays.toString(state.getFretButtons()));
-        }
     }
 
 
