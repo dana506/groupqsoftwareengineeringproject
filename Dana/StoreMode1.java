@@ -18,6 +18,12 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+/**
+ * 
+ * @author Dana Buzatu
+ *
+ */
+
 public class StoreMode1 extends JFrame {
 
 	private JPanel contentPane;
