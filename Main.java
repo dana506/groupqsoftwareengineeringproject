@@ -11,15 +11,13 @@ import java.io.IOException;
  * @author Sergiu Ivanov
  *
  */
-public class Main extends JFrame{
+public class Main extends JFrame implements EscapeButtonListener{
 
     final Exit btnExit = new Exit("exit.png");
     final Play btnPlay = new Play("play.png");
     final Select btnSelect = new Select("select.png");
     final Store btnStore = new Store("store.png");
     final Tutorial btnTutorial = new Tutorial("tutorial.png");
-
-    GuitarController guitarController;
 
     //constructor
     public Main(){
@@ -32,17 +30,11 @@ public class Main extends JFrame{
         btnSelect.setBounds  (  350, 200,  100, 130 ); add( btnSelect  );
         btnStore.setBounds  (  500, 200,  100, 130 ); add( btnStore  );
         btnTutorial.setBounds  (  650, 200,  100, 130 ); add( btnTutorial  );
-        
-        try {
-        	guitarController = new GuitarController();
-        }
-        catch(IOException e)
-        {
-        	System.out.println("No guitar controller found");
-        	System.exit(-1);
-        }
     }
 
+    public void escapeButtonEventReceived(EscapeButtonEvent event) {
+        System.exit(0);
+    }
 
     public static void main(String[] args) {
         JFrame frame = new Main();
@@ -51,5 +43,21 @@ public class Main extends JFrame{
         frame.setSize( 791, 600 );
         frame.setResizable( true );
         frame.setVisible( true );
+
+
+        GuitarController guitarController = null;
+        try {
+            guitarController = new GuitarController();
+        }
+        catch(IOException e)
+        {
+            System.out.println("No guitar controller found");
+            System.exit(-1);
+        }
+
+        /* Set up the guitar poller in its own thread. Pass this object into your classes to be able to receive events - Callum */
+        GuitarPoller poller = new GuitarPoller(guitarController);
+        poller.addEscapeButtonListener((EscapeButtonListener) frame);
+        (new Thread(poller)).start();
     }
 }
