@@ -3,9 +3,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 /**
  * 
  * @author Sergiu Ivanov
@@ -32,7 +29,7 @@ public class Main extends JFrame implements EscapeButtonListener{
         btnTutorial.setBounds  (  650, 200,  100, 130 ); add( btnTutorial  );
     }
 
-    public void escapeButtonEventReceived(EscapeButtonEvent event) {
+    public void escapeButtonEventReceived(GuitarEvent event) {
         System.exit(0);
     }
 
@@ -46,7 +43,7 @@ public class Main extends JFrame implements EscapeButtonListener{
         frame.setFocusable(true);
 
 
-        IGuitarController guitarController = null;
+        GuitarController guitarController = null;
 
         /**
          * If you want to mock the guitar with your computer's keyboard, uncomment below and comment the block after - Callum
@@ -60,7 +57,7 @@ public class Main extends JFrame implements EscapeButtonListener{
          */
         /*
         try {
-            guitarController = new GuitarController();
+            guitarController = new PhysicalGuitarController();
         }
         catch(IOException e)
         {

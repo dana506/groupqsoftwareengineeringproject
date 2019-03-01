@@ -9,7 +9,7 @@ public class GuitarPoller implements Runnable {
     /**
      * The controller that we query to fetch the state
      */
-    private IGuitarController controller;
+    private GuitarController controller;
 
     /**
      * The listeners of the various events that can occur
@@ -21,7 +21,7 @@ public class GuitarPoller implements Runnable {
     private ArrayList<BenderButtonListener> benderButtonListeners = new ArrayList<>();
     private ArrayList<EscapeButtonListener> escapeButtonListeners = new ArrayList<>();
 
-    public GuitarPoller(IGuitarController controller) {
+    public GuitarPoller(GuitarController controller) {
         this.controller = controller;
     }
 
@@ -30,42 +30,42 @@ public class GuitarPoller implements Runnable {
      * @param state The state of the guitar at the instance the event occurs
      */
     private void fireFretButtonsEvent(GuitarState state) {
-        FretButtonsEvent event = new FretButtonsEvent(this, state);
+        GuitarEvent event = new GuitarEvent(this, state);
         for(FretButtonsListener listener: fretButtonsListeners) {
             listener.fretButtonsEventReceived(event);
         }
     }
 
     private void fireStrumBarEvent(GuitarState state) {
-        StrumBarEvent event = new StrumBarEvent(this, state);
+        GuitarEvent event = new GuitarEvent(this, state);
         for(StrumBarListener listener: strumBarListeners) {
             listener.strumBarEventReceived(event);
         }
     }
 
     private void fireZeroPowerButtonEvent(GuitarState state) {
-        ZeroPowerButtonEvent event = new ZeroPowerButtonEvent(this, state);
+        GuitarEvent event = new GuitarEvent(this, state);
         for(ZeroPowerButtonListener listener: zeroPowerButtonListeners) {
             listener.zeroPowerButtonEventReceived(event);
         }
     }
 
     public void fireWhammyBarEvent(GuitarState state) {
-        WhammyBarEvent event = new WhammyBarEvent(this, state);
+        GuitarEvent event = new GuitarEvent(this, state);
         for(WhammyBarListener listener: whammyBarListeners) {
             listener.whammyBarEventReceived(event);
         }
     }
 
     public void fireBenderButtonEvent(GuitarState state) {
-        BenderButtonEvent event = new BenderButtonEvent(this, state);
+        GuitarEvent event = new GuitarEvent(this, state);
         for(BenderButtonListener listener: benderButtonListeners) {
             listener.benderButtonEventReceived(event);
         }
     }
 
     private void fireEscapeButtonEvent(GuitarState state) {
-        EscapeButtonEvent event = new EscapeButtonEvent(this, state);
+        GuitarEvent event = new GuitarEvent(this, state);
         for(EscapeButtonListener listener: escapeButtonListeners) {
             listener.escapeButtonEventReceived(event);
         }

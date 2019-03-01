@@ -2,7 +2,7 @@
  * Used to mock the guitar controller with just a keyboard
  * @author Callum Browne
  */
-public class MockGuitarController implements IGuitarController {
+public class MockGuitarController implements GuitarController {
     /**
      * The object that keep tracks of the current keyboard state
      */
