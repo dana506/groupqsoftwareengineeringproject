@@ -2,9 +2,9 @@
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
-import java.util.Arrays;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * 
@@ -43,9 +43,22 @@ public class Main extends JFrame implements EscapeButtonListener{
         frame.setSize( 791, 600 );
         frame.setResizable( true );
         frame.setVisible( true );
+        frame.setFocusable(true);
 
 
-        GuitarController guitarController = null;
+        IGuitarController guitarController = null;
+
+        /**
+         * If you want to mock the guitar with your computer's keyboard, uncomment below and comment the block after - Callum
+         */
+        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
+        frame.addKeyListener(keyboardWatcher);
+        guitarController = new MockGuitarController(keyboardWatcher);
+
+        /**
+         * If you want to use the physical guitar controller, uncomment below and comment the block above
+         */
+        /*
         try {
             guitarController = new GuitarController();
         }
@@ -53,9 +66,11 @@ public class Main extends JFrame implements EscapeButtonListener{
         {
             System.out.println("No guitar controller found");
             System.exit(-1);
-        }
+        }*/
 
-        /* Set up the guitar poller in its own thread. Pass this object into your classes to be able to receive events - Callum */
+        /* Set up the guitar poller to run in its own thread. Pass this poller into your class to be able to register it
+        as a listener - Callum
+         */
         GuitarPoller poller = new GuitarPoller(guitarController);
         poller.addEscapeButtonListener((EscapeButtonListener) frame);
         (new Thread(poller)).start();

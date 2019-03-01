@@ -9,7 +9,7 @@ public class GuitarPoller implements Runnable {
     /**
      * The controller that we query to fetch the state
      */
-    private GuitarController controller;
+    private IGuitarController controller;
 
     /**
      * The listeners of the various events that can occur
@@ -21,7 +21,7 @@ public class GuitarPoller implements Runnable {
     private ArrayList<BenderButtonListener> benderButtonListeners = new ArrayList<>();
     private ArrayList<EscapeButtonListener> escapeButtonListeners = new ArrayList<>();
 
-    public GuitarPoller(GuitarController controller) {
+    public GuitarPoller(IGuitarController controller) {
         this.controller = controller;
     }
 

@@ -8,7 +8,7 @@ import net.java.games.input.ControllerEnvironment;
  * @author Callum Browne
  *
  */
-public class GuitarController {
+public class GuitarController implements IGuitarController {
 	/**
 	 * The JInput controller representing the physical controller
 	 */
