@@ -8,9 +8,9 @@ import java.awt.event.ActionListener;
  * @author Sergiu Ivanov
  *
  */
-public class Exit extends JButton {
+public class ExitButton extends JButton {
 
-    public Exit(String s){
+    public ExitButton(String s){
         setIcon( new ImageIcon(  s  ) );
         setBorder( null );
 

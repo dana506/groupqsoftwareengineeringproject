@@ -1,9 +1,9 @@
 
 import javax.swing.*;
 
-public class Select extends JButton {
+public class SelectButton extends JButton {
 
-    public Select(String s){
+    public SelectButton(String s){
         setIcon( new ImageIcon(  s  ) );
         setBorder( null );
     }

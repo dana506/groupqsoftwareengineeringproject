@@ -2,9 +2,9 @@
 
 import javax.swing.*;
 
-public class Tutorial extends JButton{
+public class TutorialButton extends JButton{
 
-    public Tutorial(String s){
+    public TutorialButton(String s){
         setIcon( new ImageIcon(  s  ) );
         setBorder( null );
     }

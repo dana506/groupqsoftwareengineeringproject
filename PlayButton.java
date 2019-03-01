@@ -1,9 +1,9 @@
 
 import javax.swing.*;
 
-public class Play extends JButton {
+public class PlayButton extends JButton {
 
-    public Play(String s){
+    public PlayButton(String s){
         setIcon( new ImageIcon(  s  ) );
         setBorder( null );
     }
