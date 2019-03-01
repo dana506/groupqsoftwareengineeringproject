@@ -1,7 +1,7 @@
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import java.io.IOException;
 
 /**
  * 
