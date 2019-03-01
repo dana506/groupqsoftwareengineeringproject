@@ -1,0 +1,10 @@
+/**
+ * Represents a listener of the fret buttons
+ * @author Callum Browne
+ */
+public interface FretButtonsListener extends GuitarStateChangeListener {
+    /**
+     * The method to be called when the fret buttons change state
+     */
+    public void fretButtonsEventReceived(FretButtonsEvent event);
+}

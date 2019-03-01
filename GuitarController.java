@@ -56,7 +56,7 @@ public class GuitarController {
 
             return GuitarState.fromControllerComponentsValues(values);
     	}
-    	
+
     	return null;
     }
 }

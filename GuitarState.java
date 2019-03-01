@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Represents the state of a guitar controller at a given moment in time, i.e. the status of all its components
  * @author Callum Browne
@@ -7,7 +9,7 @@ public class GuitarState {
 	/**
 	 * An array of six boolean values, corresponding to each fret button
 	 */
-    private Boolean[] fretButtons;
+    private boolean[] fretButtons;
     
     /**
      * An integer value (either -1, 0 or 1) corresponding to the strum bar's state
@@ -17,7 +19,7 @@ public class GuitarState {
     /**
      * A boolean value representing whether the Zero Power button is pressed
      */
-    private Boolean zeroPowerButton;
+    private boolean zeroPowerButton;
     
     /**
      * A float value between 0 and 1 (inclusive) representing the current value of the whammy bar
@@ -34,7 +36,7 @@ public class GuitarState {
      */
     private Boolean escapeButton;
 
-    public GuitarState(Boolean[] fretButtons, int strumBar, Boolean zeroPowerButton, float whammyBar, float benderButton, Boolean escapeButton) {
+    public GuitarState(boolean[] fretButtons, int strumBar, boolean zeroPowerButton, float whammyBar, float benderButton, Boolean escapeButton) {
         this.fretButtons = fretButtons;
         this.strumBar = strumBar;
         this.zeroPowerButton = zeroPowerButton;
@@ -51,17 +53,47 @@ public class GuitarState {
      */
     public static GuitarState fromControllerComponentsValues(float[] values)
     {
-        Boolean[] fretButtons = {(values[1] != 0), (values[0] != 0), (values[2] != 0), (values[4] != 0), (values[3] != 0), (values[5] != 0)};
-        int strumBar = (int) values[14];
-        Boolean zeroPowerButton = (values[8] != 0);
-        float whammyBar = values[16];
-        float benderButton = values[17];
-        Boolean escapeButton = (values[10] != 0);
+        boolean[] fretButtons = new boolean[]{false, false, false, false, false, false};
+        int strumBar = 0;
+        boolean zeroPowerButton = false;
+        float whammyBar = 0;
+        float benderButton = 0;
+        boolean escapeButton = false;
+
+        String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("windows")) {
+            fretButtons = new boolean[]{(values[1] != 0), (values[0] != 0), (values[2] != 0), (values[4] != 0), (values[3] != 0), (values[5] != 0)};
+            strumBar = (int) values[16];
+            zeroPowerButton = (values[8] != 0);
+            whammyBar = values[14];
+            benderButton = values[13];
+            escapeButton = (values[10] != 0);
+        }
+        else if(os.contains("inux")) {
+            fretButtons = new boolean[]{(values[1] != 0), (values[0] != 0), (values[2] != 0), (values[4] != 0), (values[3] != 0), (values[5] != 0)};
+            strumBar = (int) values[14];
+            zeroPowerButton = (values[8] != 0);
+            whammyBar = values[16];
+            benderButton = values[17];
+            escapeButton = (values[10] != 0);
+        }
+        else if(os.contains("mac")) {
+            fretButtons = new boolean[]{(values[1] != 0), (values[0] != 0), (values[2] != 0), (values[4] != 0), (values[3] != 0), (values[5] != 0)};
+            strumBar = (int) values[15];
+            zeroPowerButton = (values[8] != 0);
+            whammyBar = values[17];
+            benderButton = values[13];
+            escapeButton = (values[10] != 0);
+        }
+        else {
+            System.out.println("Unsupported machine...");
+            System.exit(-1);
+        }
 
         return new GuitarState(fretButtons, strumBar, zeroPowerButton, whammyBar, benderButton, escapeButton);
     }
 
-    public Boolean[] getFretButtons() {
+    public boolean[] getFretButtons() {
         return fretButtons;
     }
 
