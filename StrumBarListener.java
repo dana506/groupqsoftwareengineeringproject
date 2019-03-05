@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.util.ArrayList;
+
 /**
  * Represents a listener of the strum bar
  * @author Callum Browne

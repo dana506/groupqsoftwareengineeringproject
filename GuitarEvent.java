@@ -14,7 +14,6 @@ public class GuitarEvent extends EventObject {
         super(source);
         this.state = state;
     }
-
     public GuitarState getState() {
         return state;
     }

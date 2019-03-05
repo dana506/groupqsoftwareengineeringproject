@@ -3,10 +3,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 /**
- * 
- * @author Sergiu Ivanov
+ * This class sets up an icon for the exit button.
  *
+ * @author Sergiu Ivanov
  */
 public class ExitButton extends JButton {
 

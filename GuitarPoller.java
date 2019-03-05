@@ -134,7 +134,6 @@ public class GuitarPoller implements Runnable {
             if(state.getEscapeButton() != previousState.getEscapeButton()) {
                 fireEscapeButtonEvent(state);
             }
-
             previousState = state;
         }
     }
