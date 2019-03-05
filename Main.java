@@ -39,12 +39,12 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         setContentPane( new JLabel( new ImageIcon( "guitar2.png" ) ) );
         setLayout( null );
 
-        btnExit = new ExitButton("exit2.png");
+        btnExit = new ExitButton("exit.png");
 //        btnExit2 = new ExitButton("exit.png");
-        btnPlay = new PlayButton("play2.png");
-        btnSelect = new SelectButton("select2.png");
-        btnStore = new StoreButton("store2.png");
-        btnTutorial = new TutorialButton("tutorial2.png");
+        btnPlay = new PlayButton("play.png");
+        btnSelect = new SelectButton("select.png");
+        btnStore = new StoreButton("store.png");
+        btnTutorial = new TutorialButton("tutorial.png");
         buttons.add(btnExit);
 //        buttons.add(btnExit2);
         buttons.add(btnPlay);
