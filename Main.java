@@ -2,17 +2,19 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.io.IOException;
+import java.security.KeyPair;
 import java.util.ArrayList;
 
 /**
  * This is the main class that represents the Slash mode menu
- * 
+ *
  * @author Sergiu Ivanov
  */
 
 public class Main extends JFrame implements EscapeButtonListener, StrumBarListener, ZeroPowerButtonListener{
 
-    private static JPanel jPanel;
+    private static JPanel slashModePanel ;
+
     private  static ExitButton btnExit ;
     private  static ExitButton btnExit2 ;
     private  static PlayButton btnPlay ;
@@ -35,27 +37,86 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
      * @author Sergiu Ivanov
      */
     public Main(){
-        setTitle( "Guitar Zero Live (SLASH MODE)" );
-        setContentPane( new JLabel( new ImageIcon( "guitar2.png" ) ) );
-        setLayout( null );
 
-        btnExit = new ExitButton("exit.png");
-//        btnExit2 = new ExitButton("exit.png");
-        btnPlay = new PlayButton("play.png");
-        btnSelect = new SelectButton("select.png");
-        btnStore = new StoreButton("store.png");
-        btnTutorial = new TutorialButton("tutorial.png");
+        //FRAME
+        setTitle( "Guitar Zero Live (SLASH MODE)" );
+        setSize( 791, 711 );
+        setLayout( null );
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable( false );
+        setVisible( true );
+
+        //BUTTONS
+        btnExit = new ExitButton("exit2.png");
+        btnExit2 = new ExitButton("exit2.png");
+        btnPlay = new PlayButton("play2.png");
+        btnSelect = new SelectButton("select2.png");
+        btnStore = new StoreButton("store2.png");
+        btnTutorial = new TutorialButton("tutorial2.png");
         buttons.add(btnExit);
-//        buttons.add(btnExit2);
+        buttons.add(btnExit2);
         buttons.add(btnPlay);
         buttons.add(btnSelect);
         buttons.add(btnStore);
         buttons.add(btnTutorial);
-//        jPanel= new JPanel();
-//        jPanel.add(btnExit);
-//        jPanel.add(btnPlay);
-//        jPanel.add(btnSelect);
-//        add(jPanel);
+
+        //MIDDLE PANEL
+        slashModePanel = new JPanel();
+        FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER, 0,2);
+        slashModePanel.setLayout(flowLayout);
+        slashModePanel.setBackground(Color.cyan);
+        slashModePanel.setOpaque(true);
+        slashModePanel.setBounds(10, 200 ,760, 190 );
+
+        ImageIcon backgroundImage = new ImageIcon("guitar2.png");
+        JLabel background = new JLabel("Background", backgroundImage, JLabel.CENTER);
+
+        background.add(slashModePanel);
+        background.setBounds(0,0,791,711);
+        add(background);
+
+
+        showCurrentButtons(slashModePanel, buttons, firstPosition);
+
+        GuitarController guitarController = null;
+
+        /**
+         * If you want to mock the guitar with your computer's keyboard, uncomment below and comment the block after - Callum
+         */
+//        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
+//        addKeyListener(keyboardWatcher);
+//        guitarController = new MockGuitarController(keyboardWatcher);
+//
+
+        /**
+         * If you want to use the physical guitar controller, uncomment below and comment the block above
+         */
+
+        try {
+            guitarController = new PhysicalGuitarController();
+        }
+        catch(IOException e)
+        {
+            System.out.println("No guitar controller found");
+            System.exit(-1);
+        }
+
+
+        /* Set up the guitar poller to run in its own thread. Pass this poller into your class to be able to register it
+        as a listener - Callum
+         */
+
+
+        GuitarPoller poller = new GuitarPoller(guitarController);
+        poller.addEscapeButtonListener((EscapeButtonListener) this);
+        poller.addStrumBarListener((StrumBarListener) this);
+        poller.addZeroButtonListener((ZeroPowerButtonListener) this);
+        (new Thread(poller)).start();
+        System.out.println();
+
+
+
+
     }
 
     public  static ExitButton getBtnExit() {
@@ -100,20 +161,8 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
      * @author Sergiu Ivanov
      */
 
-    public void setButtons( JButton button, int position){
-        if (position == 0)
-            button.setBounds  (  20, 192,  150, 182 );
-        else if (position == 1)
-            button.setBounds  (  170, 192,  150, 182 );
-        else if (position == 2)
-            button.setBounds  (  320, 192,  150, 182 );
-        else if (position == 3)
-            button.setBounds  (  470, 192,  150, 182 );
-        else if (position== 4)
-            button.setBounds  (  620, 192,  150, 182 );
-        else
-            System.out.println("No such position ");
-        add( button );
+    public void setButtons( JPanel jPanel, JButton button){
+        jPanel.add( button );
     }
 
     /**
@@ -125,21 +174,22 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
      *
      * @author Sergiu Ivanov and Callum Brownie
      */
-    public  void showCurrentButtons (ArrayList<JButton> buttonsList, int first){
+    public  void showCurrentButtons (JPanel jPanel, ArrayList<JButton> buttonsList, int first){
+        removeAllButtons(jPanel);
         System.out.println("The first position is: " + firstPosition);
         System.out.println("The default button position is: " + defaultButtonPosition);
         int mod = buttonsList.size();
         for (int i = 0; i < 5; i++){
-            setButtons(buttonsList.get(Math.floorMod(first + i, mod)), i);
+            setButtons(jPanel, buttonsList.get(Math.floorMod(first + i, mod)));
             System.out.printf("First: %d: Showing button %d at position %d\n", first, Math.floorMod(first+i, mod), i);
         }
         System.out.println();
+        jPanel.revalidate();
     }
 
-    public  void removeAllButtons(){
-        for (JButton button: buttons){
-            this.remove(button);
-        }
+    public  void removeAllButtons(JPanel jPanel){
+        jPanel.removeAll();
+        jPanel.revalidate();
     }
 
     /**
@@ -169,12 +219,17 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
      * @author Sergiu Ivanov
      */
     public void strumBarEventReceived(GuitarEvent event){
-        //removeAllButtons();
         int strumbarValue = event.getState().getStrumBar();
         if (strumbarValue == 1 || strumbarValue == -1){
+            System.out.println(" strum bar clicked");
             firstPosition += strumbarValue;
             setDefaultButton(buttons);
-            showCurrentButtons(buttons, firstPosition);
+            showCurrentButtons(slashModePanel , buttons, firstPosition);
+//            try {
+//                Thread.currentThread().sleep(3000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
     }
     /**
@@ -196,6 +251,8 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
     public void zeroPowerButtonEventReceived(GuitarEvent event) {
         boolean isTrue = false;
         if (isTrue == event.getState().getZeroPowerButton()){
+            System.out.println(" Zero power button  clicked");
+
             if (buttons.get(defaultButtonPosition) == btnSelect){
                 JOptionPane.showMessageDialog(this, "SELECT button clicked");
             }
@@ -218,51 +275,13 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
     }
 
     public static void main(String[] args) {
-        JFrame frame = new Main();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo( null );
-        frame.setSize( 791, 711 );
-        frame.setResizable( false );
-        frame.setVisible( true );
-        frame.setFocusable(true);
-
-        ((Main) frame).showCurrentButtons(buttons, firstPosition);
-
-        GuitarController guitarController = null;
-
-        /**
-         * If you want to mock the guitar with your computer's keyboard, uncomment below and comment the block after - Callum
-         */
-        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
-        frame.addKeyListener(keyboardWatcher);
-        guitarController = new MockGuitarController(keyboardWatcher);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Main();
+            }
+        });
 
 
-
-        /**
-         * If you want to use the physical guitar controller, uncomment below and comment the block above
-         */
-
-//        try {
-//            guitarController = new PhysicalGuitarController();
-//        }
-//        catch(IOException e)
-//        {
-//            System.out.println("No guitar controller found");
-//            System.exit(-1);
-//        }
-
-
-        /* Set up the guitar poller to run in its own thread. Pass this poller into your class to be able to register it
-        as a listener - Callum
-         */
-
-
-        GuitarPoller poller = new GuitarPoller(guitarController);
-        poller.addEscapeButtonListener((EscapeButtonListener) frame);
-        poller.addStrumBarListener((StrumBarListener) frame);
-        poller.addZeroButtonListener((ZeroPowerButtonListener) frame);
-        (new Thread(poller)).start();
-        System.out.println();
     }
 }
