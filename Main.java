@@ -45,6 +45,7 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable( false );
         setVisible( true );
+        setFocusable(true);
 
         //BUTTONS
         btnExit = new ExitButton("exit2.png");
@@ -83,15 +84,15 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         /**
          * If you want to mock the guitar with your computer's keyboard, uncomment below and comment the block after - Callum
          */
-//        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
-//        addKeyListener(keyboardWatcher);
-//        guitarController = new MockGuitarController(keyboardWatcher);
-//
+        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
+        addKeyListener(keyboardWatcher);
+        guitarController = new MockGuitarController(keyboardWatcher);
+
 
         /**
          * If you want to use the physical guitar controller, uncomment below and comment the block above
          */
-
+        /*
         try {
             guitarController = new PhysicalGuitarController();
         }
@@ -99,7 +100,7 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         {
             System.out.println("No guitar controller found");
             System.exit(-1);
-        }
+        }*/
 
 
         /* Set up the guitar poller to run in its own thread. Pass this poller into your class to be able to register it
@@ -151,12 +152,7 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
     }
 
     /**
-     * This method set up the bounds of a Jbutton on a frame . The button position is determined by the position
-     * parameter, from 0 to 4.
-     *
-     * @param button means any Jbutton that needs to be added to the frame
-     * @param position means de position of the button ( 0 is the first on the left, 1 is the next one on the
-     * right, 4 is the last etc.)
+     * This method adds a button to the JPanel
      *
      * @author Sergiu Ivanov
      */
@@ -172,7 +168,7 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
      * @param buttonsList means any Arraylist of Jbuttons
      * @param first means de index of the buttons that is to be shown first
      *
-     * @author Sergiu Ivanov and Callum Brownie
+     * @author Sergiu Ivanov and Callum Browne
      */
     public  void showCurrentButtons (JPanel jPanel, ArrayList<JButton> buttonsList, int first){
         removeAllButtons(jPanel);
