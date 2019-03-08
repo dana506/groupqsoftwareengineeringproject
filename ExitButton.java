@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 
 /**
- * This class sets up an icon for the exit button.
+ * This class sets up an icon for the exit button and exits from the system when the button is clicked
  *
  * @author Sergiu Ivanov
  */
