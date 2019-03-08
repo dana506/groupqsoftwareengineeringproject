@@ -6,78 +6,44 @@ import java.security.KeyPair;
 import java.util.ArrayList;
 
 /**
- * This is the main class that represents the Slash mode menu
+ * This is the main class that creates the main frame of the game and display its components.
+ *
+ * (NOT THE FINAL VERSION)
  *
  * @author Sergiu Ivanov
  */
 
 public class Main extends JFrame implements EscapeButtonListener, StrumBarListener, ZeroPowerButtonListener{
 
-    private static JPanel slashModePanel ;
-
-    private  static ExitButton btnExit ;
-    private  static ExitButton btnExit2 ;
-    private  static PlayButton btnPlay ;
-    private  static SelectButton btnSelect ;
-    private  static StoreButton btnStore ;
-    private  static TutorialButton btnTutorial ;
+    private static SlashView slashViewPanel = new SlashView();
+    private static SelectView selectViewPanel = new SelectView();
+    private static JPanel inputPanel = new JPanel();
     // the index of the selected button
     private  static int defaultButtonPosition = 2;
     // the index of the first icon on the left
     private static int firstPosition = 0;
-
-    private static ArrayList<JButton> buttons = new ArrayList<>();
-    public static Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
-
+    private static ArrayList<JButton> buttons;
 
     /**
-     * This is the main constructor that set up the background image, creates Jbuttons and adds them
-     * to an Arraylist "buttons" for further use
+     * This is the main constructor that set up the background image and adds a JPanel to it.
      *
      * @author Sergiu Ivanov
      */
     public Main(){
-
         //FRAME
-        setTitle( "Guitar Zero Live (SLASH MODE)" );
-        setSize( 791, 711 );
+        setTitle( "SLASH MODE");
+        setSize( 780, 711 );
         setLayout( null );
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable( false );
         setVisible( true );
         setFocusable(true);
 
-        //BUTTONS
-        btnExit = new ExitButton("exit2.png");
-        btnExit2 = new ExitButton("exit2.png");
-        btnPlay = new PlayButton("play2.png");
-        btnSelect = new SelectButton("select2.png");
-        btnStore = new StoreButton("store2.png");
-        btnTutorial = new TutorialButton("tutorial2.png");
-        buttons.add(btnExit);
-        buttons.add(btnExit2);
-        buttons.add(btnPlay);
-        buttons.add(btnSelect);
-        buttons.add(btnStore);
-        buttons.add(btnTutorial);
+        //PANEL IN THE MIDDLE
+        setInputPanel(slashViewPanel.getSlashModePanel(), slashViewPanel.getButtons(), "guitar2.png");
 
-        //MIDDLE PANEL
-        slashModePanel = new JPanel();
-        FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER, 0,2);
-        slashModePanel.setLayout(flowLayout);
-        slashModePanel.setBackground(Color.cyan);
-        slashModePanel.setOpaque(true);
-        slashModePanel.setBounds(10, 200 ,760, 190 );
-
-        ImageIcon backgroundImage = new ImageIcon("guitar2.png");
-        JLabel background = new JLabel("Background", backgroundImage, JLabel.CENTER);
-
-        background.add(slashModePanel);
-        background.setBounds(0,0,791,711);
-        add(background);
-
-
-        showCurrentButtons(slashModePanel, buttons, firstPosition);
+        // DISPLAY CURRENT BUTTONS IN THE PANEL
+        showCurrentButtons(buttons, firstPosition);
 
         GuitarController guitarController = null;
 
@@ -87,7 +53,6 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
         addKeyListener(keyboardWatcher);
         guitarController = new MockGuitarController(keyboardWatcher);
-
 
         /**
          * If you want to use the physical guitar controller, uncomment below and comment the block above
@@ -106,91 +71,59 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         /* Set up the guitar poller to run in its own thread. Pass this poller into your class to be able to register it
         as a listener - Callum
          */
-
-
         GuitarPoller poller = new GuitarPoller(guitarController);
         poller.addEscapeButtonListener((EscapeButtonListener) this);
         poller.addStrumBarListener((StrumBarListener) this);
         poller.addZeroButtonListener((ZeroPowerButtonListener) this);
         (new Thread(poller)).start();
         System.out.println();
-
-
-
-
-    }
-
-    public  static ExitButton getBtnExit() {
-        return btnExit;
-    }
-
-    public  static PlayButton getBtnPlay() {
-        return btnPlay;
-    }
-
-    public  static SelectButton getBtnSelect() {
-        return btnSelect;
-    }
-
-    public  static StoreButton getBtnStore() {
-        return btnStore;
-    }
-
-    public  static TutorialButton getBtnTutorial() {
-        return btnTutorial;
-    }
-
-    public static int getDefaultButtonPosition() {
-        return defaultButtonPosition;
-    }
-    public static ArrayList<JButton> getButtons() {
-        return buttons;
-    }
-
-    public static int getFirstPosition() {
-        return firstPosition;
     }
 
     /**
      * This method adds a button to the JPanel
      *
+     * @param button is a JButton that needs to be added to the panel
      * @author Sergiu Ivanov
      */
-
-    public void setButtons( JPanel jPanel, JButton button){
-        jPanel.add( button );
+    public void setButtons( JButton button){
+        inputPanel.add( button );
     }
 
     /**
-     * This method shows 5 buttons from an arraylist . The index of the first button should be set as a parameter,
+     * This method shows 5 buttons from an array list . The index of the first button should be set as a parameter,
      *     the position of the rest will be computed automatically.
      *
-     * @param buttonsList means any Arraylist of Jbuttons
-     * @param first means de index of the buttons that is to be shown first
+     * @param buttonsList means any array list of JButtons
+     * @param first means de index of the button that is to be shown first
      *
      * @author Sergiu Ivanov and Callum Browne
      */
-    public  void showCurrentButtons (JPanel jPanel, ArrayList<JButton> buttonsList, int first){
-        removeAllButtons(jPanel);
-        System.out.println("The first position is: " + firstPosition);
-        System.out.println("The default button position is: " + defaultButtonPosition);
+    public  void showCurrentButtons ( ArrayList<JButton> buttonsList, int first){
+        removeAllButtons(inputPanel);
+//        System.out.println("The first position is: " + firstPosition);
+//        System.out.println("The default button position is: " + defaultButtonPosition);
         int mod = buttonsList.size();
         for (int i = 0; i < 5; i++){
-            setButtons(jPanel, buttonsList.get(Math.floorMod(first + i, mod)));
-            System.out.printf("First: %d: Showing button %d at position %d\n", first, Math.floorMod(first+i, mod), i);
+            setButtons(buttonsList.get(Math.floorMod(first + i, mod)));
+//            System.out.printf("First: %d: Showing button %d at position %d\n", first, Math.floorMod(first+i, mod), i);
         }
-        System.out.println();
-        jPanel.revalidate();
+//        System.out.println();
+        inputPanel.revalidate();
     }
-
+    /**
+     * This method clear all components in a JPanel
+     *
+     * @param jPanel is a JPanel that is to be cleared and revalidate
+     * @author Sergiu Ivanov
+     */
     public  void removeAllButtons(JPanel jPanel){
         jPanel.removeAll();
         jPanel.revalidate();
     }
 
     /**
-     * This method sets up de index of the selected button. The index is used to highlight
-     * the selected button that should always be in the middle
+     * This method sets up de index of the button that is selected by the user. The index is used to highlight
+     * the selected button that should always be in the middle.
      *
      * @param buttonsList means any Arraylist of Jbuttons
      * @author Sergiu Ivanov
@@ -199,12 +132,29 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         int mod = buttonsList.size();
         defaultButtonPosition = Math.floorMod(firstPosition + 2, mod);
         JButton defaultButton = buttons.get(defaultButtonPosition);
-        //defaultButton.setBorder(null);
         JRootPane rootPane = SwingUtilities.getRootPane(defaultButton);
         if (rootPane != null) {
             rootPane.setDefaultButton(defaultButton);
-            //defaultButton.setBorder(border);
         }
+    }
+
+    /**
+     * This method sets up the background image for the main frame and  adds a JPanel to it.
+     * The JPanel will contain the buttons from the array list of JButtons.
+     *
+     * @param jPanel is the JPanel displayed
+     * @param  buttons is an array list of buttons
+     * @param  backgroundImageTitle is the title of a png image that serve as the background image
+     * @author Sergiu Ivanov
+     */
+    public void setInputPanel(JPanel jPanel, ArrayList<JButton> buttons, String backgroundImageTitle){
+        Main.buttons = buttons;
+        Main.inputPanel = jPanel;
+        ImageIcon backgroundImage = new ImageIcon(backgroundImageTitle);
+        JLabel background = new JLabel("Background", backgroundImage, JLabel.CENTER);
+        background.add(inputPanel);
+        background.setBounds(0,0,791,711);
+        add(background);
     }
 
     /**
@@ -217,25 +167,33 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
     public void strumBarEventReceived(GuitarEvent event){
         int strumbarValue = event.getState().getStrumBar();
         if (strumbarValue == 1 || strumbarValue == -1){
-            System.out.println(" strum bar clicked");
+            //System.out.println(" strum bar clicked");
             firstPosition += strumbarValue;
             setDefaultButton(buttons);
-            showCurrentButtons(slashModePanel , buttons, firstPosition);
-//            try {
-//                Thread.currentThread().sleep(3000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            showCurrentButtons( buttons, firstPosition);
         }
     }
     /**
      * This method exits the game
      *
      * @param event is the event fired by the strum bar
-     * @author Callum Brownie
+     * @author Sergiu Ivanov and Callum Browne
      */
     public void escapeButtonEventReceived(GuitarEvent event) {
-        System.exit(0);
+        if(event.getState().getEscapeButton()){
+            if (getTitle().equals("SLASH MODE")){
+                System.exit(0);
+            }
+            else if(getTitle().equals("***SELECT MODE***")){
+                setTitle("SLASH MODE");
+
+                setInputPanel(slashViewPanel.getSlashModePanel(), slashViewPanel.getButtons(), "guitar2.png");
+                slashViewPanel.getSlashModePanel().revalidate();
+                slashViewPanel.getSlashModePanel().setVisible(true);
+                selectViewPanel.getSelectModePanel().revalidate();
+                selectViewPanel.getSelectModePanel().setVisible(false);
+            }
+        }
     }
 
     /**
@@ -247,21 +205,24 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
     public void zeroPowerButtonEventReceived(GuitarEvent event) {
         boolean isTrue = false;
         if (isTrue == event.getState().getZeroPowerButton()){
-            System.out.println(" Zero power button  clicked");
-
-            if (buttons.get(defaultButtonPosition) == btnSelect){
-                JOptionPane.showMessageDialog(this, "SELECT button clicked");
+           // System.out.println(" Zero power button  clicked");
+            if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnSelect()){
+                setTitle("***SELECT MODE***");
+                //slashViewPanel.getSlashModePanel().setVisible(false);
+                setInputPanel(selectViewPanel.getSelectModePanel(), selectViewPanel.getButtons(), "guitar.png");
+                // DISPLAY CURRENT BUTTONS IN THE NEW PANEL
+                showCurrentButtons(buttons, firstPosition);
             }
-            else if (buttons.get(defaultButtonPosition) == btnPlay){
+            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnPlay()){
                 JOptionPane.showMessageDialog(this, "PLAY button clicked");
             }
-            else if (buttons.get(defaultButtonPosition) == btnStore){
+            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnStore()){
                 JOptionPane.showMessageDialog(this, "STORE button clicked");
             }
-            else if (buttons.get(defaultButtonPosition) == btnTutorial){
+            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnTutorial()){
                 JOptionPane.showMessageDialog(this, "TUTORIAL button clicked");
             }
-            else if (buttons.get(defaultButtonPosition) == btnExit){
+            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnExit()){
                 System.exit(0);
             }
             else {
@@ -270,6 +231,7 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         }
     }
 
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -277,7 +239,5 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
                 new Main();
             }
         });
-
-
     }
 }
