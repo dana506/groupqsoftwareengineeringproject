@@ -9,30 +9,19 @@ import java.util.zip.ZipInputStream;
  */
 public class BundleExtractor {
     /**
-     * The zip file to be extracted
-     */
-    private File zipFile;
-
-    /**
      * The directory to extract to. Note - the files will not be placed directly within this directory but rather
      * a new directory will be created here to contain the files
      */
     private File destinationDir;
 
-    /**
-     * This is the Bundle object that is created after extraction
-     */
-    private Bundle bundle;
-
-    public BundleExtractor(File zipFile, File destinationDir) {
-        this.zipFile = zipFile;
+    public BundleExtractor(File destinationDir) {
         this.destinationDir = destinationDir;
     }
 
     /**
-     * Perform the extraction
+     * Extract a given bundle and return an appropriate Bundle instance
      */
-    public void extract() throws DataFormatException {
+    public Bundle extract(File zipFile) throws DataFormatException {
         // First create the input streams
         FileInputStream fileInputStream = null;
         try {
@@ -106,10 +95,6 @@ public class BundleExtractor {
             throw new DataFormatException("No notes file present in zip archive");
         }
 
-        bundle = new Bundle(midiFile, artworkFile, notesFile);
-    }
-
-    public Bundle getBundle() {
-        return bundle;
+        return new Bundle(midiFile, artworkFile, notesFile);
     }
 }

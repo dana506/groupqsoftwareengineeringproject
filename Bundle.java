@@ -28,24 +28,6 @@ public class Bundle {
         this.notesFile = notesFile;
     }
 
-    /**
-     * This will extract the contents of a zipped bundle into a temporary directory so that we can access the files
-     * inside
-     * @param zipFile The zipped bundle
-     * @return A Bundle instance with references to the extracted contents
-     */
-    public static Bundle fromZipFile(File zipFile) {
-        BundleExtractor extractor = new BundleExtractor(zipFile, new File("./tmp"));
-        try {
-            extractor.extract();
-        } catch (DataFormatException e) {
-            System.out.printf("Bundle %s is improperly formed", zipFile.getName());
-            System.exit(-1);
-        }
-
-        return extractor.getBundle();
-    }
-
     public File getMidiFile() {
         return midiFile;
     }
