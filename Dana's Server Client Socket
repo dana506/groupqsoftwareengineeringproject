@@ -1,0 +1,32 @@
+Hey guys!
+
+I found some useful stuff for my Server-Client part on git. I adapted it to fit our project, but I get this thread error I can't fix. 
+So any help is welcomed.
+
+This is how I am thinking to implement Store Manager and Store interaction, using Socket programming.
+ 
+Store Mode Manager creates a bundle ZIP Format
+The Bundle is saved on Guitar Server and shown in store
+
+This is when Store Mode Manager actually acts as a Server
+and because the 'Guitar Zero Server" receives the bundle (file) trough socket it actually acts as Client
+
+Bundle is shown also in Store Mode
+
+Zero Button pressed and Currency check, bundle is purchased
+
+Currency <- Currency - 1
+
+Bundle moves from the Guitar Server (which here finally acts as a server this time) to Select Mode (Client)
+
+The thing I am struggling with is passing a file between server-client without error.
+If you get a error like "Address already in use: JVM_Bind", means the port is already used.
+You can check on cmd with "netstat -aon"
+You can easily fix it by using another port code.
+
+So... yeah 
+Any suggestion for passing file, or even better  multiple files trough socket between server-client is much appreciated
+
+My contribution is in files: StoreManager, StoreManagerMain, GuitarServer, GuitarServerMain, E, MainStoreManagerServer
+
+
