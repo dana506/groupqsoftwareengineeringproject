@@ -6,18 +6,18 @@ So any help is welcomed.
 This is how I am thinking to implement Store Manager and Store interaction, using Socket programming.
  
 Store Mode Manager creates a bundle ZIP Format
-The Bundle is saved on Guitar Server and shown in store
+The Bundle is saved on Guitar Server and send over to the  Store mode, when actually
 
 This is when Store Mode Manager actually acts as a Server
 and because the 'Guitar Zero Server" receives the bundle (file) trough socket it actually acts as Client
 
-Bundle is shown also in Store Mode
+Bundle is then shown on Store Mode, Guitar Server finally acting as a server and Store Mode as a client
 
 Zero Button pressed and Currency check, bundle is purchased
 
 Currency <- Currency - 1
 
-Bundle moves from the Guitar Server (which here finally acts as a server this time) to Select Mode (Client)
+Bundle is copied from the Store(which here acts as a server this time) to Select Mode (Client)
 
 The thing I am struggling with is passing a file between server-client without error.
 If you get a error like "Address already in use: JVM_Bind", means the port is already used.
