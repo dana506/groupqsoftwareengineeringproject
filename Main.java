@@ -17,10 +17,14 @@ import java.util.ArrayList;
 public class Main extends JFrame implements EscapeButtonListener, StrumBarListener, ZeroPowerButtonListener{
 
     private static JPanel inputPanel = new JPanel();
-    private ImageIcon backgroundImage = new ImageIcon("guitar2.png");
+    private static String backgroundString = "guitar2.png";
+    private ImageIcon backgroundImage = new ImageIcon(backgroundString);
     private JLabel background = new JLabel("Background", backgroundImage, JLabel.CENTER);
+
     private static SlashView slashViewPanel = new SlashView();
     private static SelectView selectViewPanel = new SelectView();
+    private static StoreView storeViewPanel = new StoreView();
+    private  static TutorialView tutorialView = new TutorialView();
     // the index of the selected button
     private  static int defaultButtonPosition = 2;
     // the index of the first icon on the left
@@ -43,7 +47,13 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         setFocusable(true);
 
         //PANEL IN THE MIDDLE
-        setInputPanel(slashViewPanel.getSlashModePanel(), slashViewPanel.getButtons());
+
+        buttons = slashViewPanel.getButtons();
+        inputPanel = slashViewPanel.getSlashModePanel();
+        background.add(inputPanel);
+        background.setBounds(0,0,791,711);
+        add(background);
+       // setInputPanel(background, slashViewPanel.getSlashModePanel(), slashViewPanel.getButtons());
 
         // DISPLAY CURRENT BUTTONS IN THE PANEL
         showCurrentButtons(buttons, firstPosition);
@@ -53,22 +63,22 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         /**
          * If you want to mock the guitar with your computer's keyboard, uncomment below and comment the block after - Callum
          */
-//        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
-//        addKeyListener(keyboardWatcher);
-//        guitarController = new MockGuitarController(keyboardWatcher);
+        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
+        addKeyListener(keyboardWatcher);
+        guitarController = new MockGuitarController(keyboardWatcher);
 
         /**
          * If you want to use the physical guitar controller, uncomment below and comment the block above
          */
 
-        try {
-            guitarController = new PhysicalGuitarController();
-        }
-        catch(IOException e)
-        {
-            System.out.println("No guitar controller found");
-            System.exit(-1);
-        }
+//        try {
+//            guitarController = new PhysicalGuitarController();
+//        }
+//        catch(IOException e)
+//        {
+//            System.out.println("No guitar controller found");
+//            System.exit(-1);
+//        }
 
 
         /**
@@ -91,13 +101,16 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
      * @param  buttons is an array list of buttons
      * @author Sergiu Ivanov
      */
-    public void setInputPanel(JPanel jPanel, ArrayList<JButton> buttons){
+
+    public void setInputPanel(JLabel backgroundImage, JPanel jPanel, ArrayList<JButton> buttons){
         Main.buttons = buttons;
         Main.inputPanel = jPanel;
+        remove(background);
+        backgroundImage.add(inputPanel);
+        backgroundImage.setBounds(0,0,791,711);
+        add(backgroundImage);
+        revalidate();
 
-        background.add(inputPanel);
-        background.setBounds(0,0,791,711);
-        add(background);
     }
 
     /**
@@ -188,13 +201,15 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
             if (getTitle().equals("SLASH MODE")){
                 System.exit(0);
             }
-            else if(getTitle().equals("SELECT MODE")){
+            else if(getTitle().equals("SELECT MODE") || getTitle().equals("STORE MODE (IN DEVELOPMENT)")){
+
                 setTitle("SLASH MODE");
                 background.remove(inputPanel);
-                setInputPanel(slashViewPanel.getSlashModePanel(), slashViewPanel.getButtons());
+                setInputPanel(background, slashViewPanel.getSlashModePanel(), slashViewPanel.getButtons());
                 inputPanel.revalidate();
                 inputPanel.repaint();
                 showCurrentButtons(buttons,firstPosition);
+                revalidate();
             }
         }
     }
@@ -211,23 +226,28 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
             // System.out.println(" Zero power button  clicked");
             if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnSelect()){
                 setTitle("SELECT MODE");
-                setInputPanel(selectViewPanel.getSelectModePanel(), selectViewPanel.getButtons());
+                setInputPanel(background, selectViewPanel.getSelectModePanel(), selectViewPanel.getButtons());
                 inputPanel.revalidate();
                 inputPanel.repaint();
                 showCurrentButtons(buttons,firstPosition);
-                if (event.getState().getZeroPowerButton()){
 
-                }
             }
+            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnStore()) {
+                setTitle("STORE MODE (IN DEVELOPMENT)");
+                inputPanel.removeAll();
+                setInputPanel(background, storeViewPanel.getStoreModePanel(), storeViewPanel.getButtons());
+                inputPanel.revalidate();
+                inputPanel.repaint();
+                showCurrentButtons(buttons, firstPosition);
+            }
+            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnTutorial()){
+                JOptionPane.showMessageDialog(this, "TUTORIAL MODE IS CURRENTLY IN DEVELOPMENT");
+            }
+
             else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnPlay()){
                 JOptionPane.showMessageDialog(this, "PLAY button clicked");
             }
-            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnStore()){
-                JOptionPane.showMessageDialog(this, "STORE button clicked");
-            }
-            else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnTutorial()){
-                JOptionPane.showMessageDialog(this, "TUTORIAL button clicked");
-            }
+
             else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnExit()){
                 System.exit(0);
             }

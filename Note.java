@@ -128,5 +128,4 @@ public class Note extends JComponent { // declare Note class as a type of JCompo
         });
         t.start();
     }
-    
 }

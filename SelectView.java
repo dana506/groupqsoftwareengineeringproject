@@ -22,7 +22,7 @@ public class SelectView {
         selectModePanel = new JPanel();
         FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER, 0,2);
         selectModePanel.setLayout(flowLayout);
-        //selectModePanel.setBackground(Color.cyan);
+//        selectModePanel.setBackground(Color.cyan);
         selectModePanel.setOpaque(true);
         selectModePanel.setBounds(10, 200 ,760, 190 );
 

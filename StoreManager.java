@@ -125,7 +125,7 @@ public class StoreManager extends E{
     }
 
 
-    private String getFileList(@NotNull String path) { //as long as the parameter path is not null
+    private String getFileList( String path) { //as long as the parameter path is not null
         File folder = new File(path); //folder created in requested location
         File[] listOfFiles = folder.listFiles(); //array to hold the files
         

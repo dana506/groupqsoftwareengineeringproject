@@ -34,7 +34,7 @@ public class SlashView {
         slashModePanel = new JPanel();
         FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER, 0,2);
         slashModePanel.setLayout(flowLayout);
-        //slashModePanel.setBackground(Color.red);
+//        slashModePanel.setBackground(Color.red);
         slashModePanel.setOpaque(true);
         slashModePanel.setBounds(10, 200 ,760, 190 );
 
@@ -65,5 +65,33 @@ public class SlashView {
     }
     public  ArrayList<JButton> getButtons() {
         return buttons;
+    }
+
+    public void setSlashModePanel(JPanel slashModePanel) {
+        this.slashModePanel = slashModePanel;
+    }
+
+    public void setBtnExit(ExitButton btnExit) {
+        this.btnExit = btnExit;
+    }
+
+    public void setBtnPlay(PlayButton btnPlay) {
+        this.btnPlay = btnPlay;
+    }
+
+    public void setBtnSelect(SelectButton btnSelect) {
+        this.btnSelect = btnSelect;
+    }
+
+    public void setBtnStore(StoreButton btnStore) {
+        this.btnStore = btnStore;
+    }
+
+    public void setBtnTutorial(TutorialButton btnTutorial) {
+        this.btnTutorial = btnTutorial;
+    }
+
+    public void setButtons(ArrayList<JButton> buttons) {
+        this.buttons = buttons;
     }
 }
