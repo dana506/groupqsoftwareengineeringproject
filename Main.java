@@ -63,22 +63,22 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
         /**
          * If you want to mock the guitar with your computer's keyboard, uncomment below and comment the block after - Callum
          */
-        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
-        addKeyListener(keyboardWatcher);
-        guitarController = new MockGuitarController(keyboardWatcher);
+//        KeyboardWatcher keyboardWatcher = new KeyboardWatcher();
+//        addKeyListener(keyboardWatcher);
+//        guitarController = new MockGuitarController(keyboardWatcher);
 
         /**
          * If you want to use the physical guitar controller, uncomment below and comment the block above
          */
 
-//        try {
-//            guitarController = new PhysicalGuitarController();
-//        }
-//        catch(IOException e)
-//        {
-//            System.out.println("No guitar controller found");
-//            System.exit(-1);
-//        }
+        try {
+            guitarController = new PhysicalGuitarController();
+        }
+        catch(IOException e)
+        {
+            System.out.println("No guitar controller found");
+            System.exit(-1);
+        }
 
 
         /**
