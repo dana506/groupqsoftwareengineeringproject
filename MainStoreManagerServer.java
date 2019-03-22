@@ -3,6 +3,12 @@
 //import java.net.InetAddress;
 //import java.util.List;
 //
+// /** 
+// *
+// *@author Dana Buzatu
+// *Guitar Sever, here acts as a client, receiving bundles from Store Manager Mode (acting as server)
+// *
+// *
 //
 //public class MainStoreManagerServer {
 //
@@ -32,7 +38,7 @@
 //                    }
 //
 //                    if (fileList.size() > 0) {
-//                        client.requestFile("C:/Users/Dana/eclipse-workspace/StoreServerClient", "./download/lala.txt");
+//                        client.requestFile("C:/Users/Dana/StoreServerClient", "./download/Layla.zip");
 //                        println("done");
 //                    } else {
 //
