@@ -11,6 +11,12 @@
 //import java.util.LinkedList;
 //import java.util.List;
 //
+// /** 
+// *
+// *@author Dana Buzatu
+// *Guitar Sever, here acts as a client, receiving bundles from Store Manager Mode (acting as server)
+// *
+// */
 //public class GuitarServer {
 //    private int port = 8080; //match the E port
 //    private Socket socket;
