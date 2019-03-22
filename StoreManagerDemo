@@ -1,0 +1,36 @@
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+/** 
+*
+*@author Dana Buzatu
+*Store Manager acts as server
+*
+*/
+
+public class StoreManager extends ZipFile{
+	
+
+	private static ServerSocket ssm;
+	private static FileInputStream fsm;
+
+
+	public static void main(String[] args) throws IOException { 
+  
+      //Creating the Bundle
+			createBundle("C:/Users/Dana/Desktop/Doc/Layla.zip","C:/Users/Dana/Desktop/Folder/Layla.png", "C:/Users/Dana/Desktop/Folder/Another-One-Bites-The-Dust.png", "C:/Users/Dana/Desktop/Folder/Hotel-California.png");
+			
+			ssm = new ServerSocket (8080);
+			Socket sgs = ssm.accept();
+		
+			fsm = new FileInputStream ("C:/Users/Dana/Desktop/Doc/Layla.zip"); //file to be moved
+	
+			byte[] b = new byte[2002];
+			fsm.read(b,0,b.length);
+			
+			java.io.OutputStream osm = sgs.getOutputStream();
+			osm.write(b,0, b.length);
+	      }
+	}
