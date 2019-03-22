@@ -15,20 +15,21 @@ public class Note extends JComponent { // declare Note class as a type of JCompo
     private int xPos; // x position of note (does not change except for animations)
     private int dy; // speed of note
     private int string; // string that the note is on
+    private int driftCounter; //the count when x needs to shift
     private Color color; // color of note
     private Ellipse2D.Double e2d; // ellipse defining shape of note
     private int size; // size of note's ellipse
     private int shrinkStage; // which animation state note is at (0 = stable/fully grown, 1 = shrinking/growing, 2 = fully shrunken)
     private int count; // counter used to change x twice as slowly for animations
-    public static final int[] xs = new int[] {312, 335, 355, 380, 400, 420}; // array of x positions based on string
+    public static final int[] xs = new int[] {330, 375, 410, 330, 375, 410}; // array of x positions based on string
     public static final int[] strings = new int[] {1,2,3,4,5,6}; // array of key names of strings
-    public static final Color[] colors = new Color[] {Color.BLUE, Color.GREEN, Color.RED, Color.ORANGE, Color.YELLOW, Color.MAGENTA}; // array of colors for each string
+    public static final Color[] colors = new Color[] {Color.BLACK, Color.BLACK, Color.BLACK, Color.WHITE, Color.WHITE, Color.WHITE}; // array of colors for each string
     
     public Note(int k) { // constructor for Note, pass in key and note of Note
-        yPos = -20; // start note out of frame
-        size = 1; // start note at small size
+        driftCounter = 0;
+        yPos = 150; // start note out of frame
+        size = 40; // start note at small size
         dy = 1; // move note at one unit at a time
-        // = n; // initialize note for guitar to play later
         if (k == 0) string = 6; // if the note is a blank note, set the string to 6 (out of bounds) so it is not drawn
         else { // if the note is note blank
             for (int i = 0; i < 6; i++) { // loop through strings
@@ -40,22 +41,21 @@ public class Note extends JComponent { // declare Note class as a type of JCompo
         }
         setBounds(0, 0, 800, 1024); // set bounds of the note so it shows up in absolute positioning of game frame
         color = colors[string]; // obtain color of note based on string
-        xPos = xs[string] + 4; // obtain x position of note based on string, add 4 for size issues (growing)
+        xPos = xs[string]; // obtain x position of note based on string
         e2d = new Ellipse2D.Double(xPos, yPos, size, size); // initialize ellipse
         
         // grow note into position
         shrinkStage = 1; // start growing note
         final Timer t = new Timer(50, null); // create swing timer, null ActionListener to be able to control it within its own method
         t.addActionListener((ActionEvent e) -> {
-            // when timer ticks
-            size += 2; // increment size of note by 2
+            // when timer ticks 
             count++; // increment x position counter
             if (count == 5) { // every five timer ticks
-                xPos--; // decrement x position to recenter it as it shrinks
+                xPos = xs[string]; // x position to recenter it as it shrinks
                 count = 0; // reset counter
             }
-            if (size >= 20) { // if the size is 20 or has grown too large, it should stop growing
-                size = 20; // reset its size to 20
+            if (size >= 40) { // if the size is 40 or has grown too large, it should stop growing
+                size = 40; // reset its size to 40
                 xPos = xs[string]; // reset its x position
                 shrinkStage = 0; // stop shrinking
                 count = 0; // stop counting
@@ -71,9 +71,19 @@ public class Note extends JComponent { // declare Note class as a type of JCompo
         if(string < 6) {
             // if the note is not a blank note
             Graphics2D g2 = (Graphics2D) g; // simplify graphics context to two dimensions
-            e2d.setFrame(xPos + 2, yPos + 2, size - 4, size - 4); //reposition circle
+            driftCounter++;
+            if (driftCounter%4==0) {
+                if (string == 0 || string == 3) {//shift left if on first string
+                    xPos--;
+                }
+                else if(string == 2 || string == 5){// shift right if on third string
+                    xPos++;
+                }
+            }
+            e2d.setFrame(xPos, yPos-5, size - 4, size - 4); //reposition circle
+            
             g2.setColor(color); // set colour of note
-            if(yPos >= 770) g2.setColor(Color.BLACK); // missed notes go black
+            if(yPos >= 770) g2.setColor(Color.RED); // missed notes go black
             g2.fill(e2d); //fill the ellipse
         }
     }
@@ -95,7 +105,7 @@ public class Note extends JComponent { // declare Note class as a type of JCompo
     
     // accessor that detects if note is in the reaction rectangle
     public boolean isIn() {
-        return ((yPos >= 650) && (yPos <= 800));
+        return ((yPos >= 600) && (yPos <= 770));
     }
     
     // mutator for setting y position of note
@@ -128,4 +138,5 @@ public class Note extends JComponent { // declare Note class as a type of JCompo
         });
         t.start();
     }
+    
 }

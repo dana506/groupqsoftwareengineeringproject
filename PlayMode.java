@@ -24,12 +24,14 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
     private JLabel multiplierCounter; //displays current multiplier
     private JLabel scoreCounter; // displays current score
     private JLabel streakCounter; // displays current streak
+    private JLabel muliplierLabel; // displays multiplier label
     private JComponent guitarImg; // displays background image
-    private CatchBox mainCapture; // area in which notes can be caught. If area is missed, note is dropped
     private int score; // contains score
     private int streak; // contains streak
     private int multiplier = 1; //contains multiplier
     private int noteClick; // stores notes clicked intervals
+    private Note currNote; // stored the current note being played
+    private boolean space; // is space pressed
     private Timer gameTimer; // timer used to control gameplay
 
     public PlayMode() { // constructor for PlayMode
@@ -53,32 +55,34 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
         streakCounterLabel.setBounds(670, -260, 800, 1024);//absolute positioning, TODO make relitive to resolution
         streakCounterLabel.setFont(titleFont);//streak title
         JLabel scoreCounterLabel = new JLabel("SCORE");//score title
-        scoreCounterLabel.setForeground(Color.BLACK);//score title set to black
+        scoreCounterLabel.setForeground(Color.WHITE);//score title set to black
         scoreCounterLabel.setBounds(37, -260, 800, 1024);//absolute positioning, TODO make relitive to resolution
         scoreCounterLabel.setFont(titleFont);//score title
-        JLabel muliplierLabel = new JLabel("MULTIPLIER");//sreak title
+        muliplierLabel = new JLabel("MULTIPLIER");//sreak title
         muliplierLabel.setForeground(Color.BLUE);//streak title
         muliplierLabel.setBounds(650, -100, 800, 1024);//absolute positioning, TODO make relitive to resolution
         muliplierLabel.setFont(titleFont);//streak title
+        muliplierLabel.setVisible(false);
         
         // create score,streak,multiplier and currency counters
         scoreCounter = new JLabel(Integer.toString(score));//create score counter
-        scoreCounter.setForeground(Color.BLACK);//set score counter colour to black
-        scoreCounter.setBounds(37, -210, 800, 1025);//absolute positioning, TODO make relitive to resolution
+        scoreCounter.setForeground(Color.WHITE);//set score counter colour to black
+        scoreCounter.setBounds(50, -210, 800, 1025);//absolute positioning, default resolution
         scoreCounter.setFont(new Font("Default", Font.PLAIN, 70));//set the font value
         streakCounter = new JLabel(Integer.toString(streak));//create streak counter
         streakCounter.setForeground(Color.RED);//set colour of streak to red
-        streakCounter.setBounds(690, -210, 800, 1024);//absolute positioning, TODO make relitive to resolution
+        streakCounter.setBounds(690, -210, 800, 1024);//absolute positioning, default resolution
         streakCounter.setFont(new Font("Default", Font.PLAIN, 70));//set the font value
         multiplierCounter = new JLabel(Integer.toString(multiplier));
         multiplierCounter.setForeground(Color.BLUE);//set colour of multiplier to blue
-        multiplierCounter.setBounds(690, -50, 800, 1025);//absolute positioning, TODO make relitive to resolution
+        multiplierCounter.setBounds(690, -50, 800, 1025);//absolute positioning, default resolution
         multiplierCounter.setFont(new Font("Default", Font.PLAIN, 70));//set the font value
+        multiplierCounter.setVisible(false);
         
         // create background image (the guitar, finial image to be decided)
         BufferedImage img = null; // initialize img 
         try { 
-            img = ImageIO.read(new File(this.getClass().getResource("files/guitar/guitar.png").toURI())); // try reading the image from the image file. TODO: decide on final image to be used
+            img = ImageIO.read(new File(this.getClass().getResource("files/guitar/guitar.png").toURI())); // try reading the image from the image file.
         } catch (IOException | URISyntaxException e) {
             System.out.println(e.getCause());
             // catch block to recieve potential errors thrown by image buffering
@@ -91,11 +95,10 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
                 g.drawImage(imgFinal, 0, 0, null); // draw the image using the graphics component 
             }
         };
-        guitarImg.setBounds(0, 0, 800, 1024); //absolute positioning: TODO: make relative to resolution
-        mainCapture = new CatchBox(280, 710, 200, 50, 10);//absolute positioning for acceptable note catch area: TODO: make relative to resolution
+        guitarImg.setBounds(0, 0, 800, 1024); //default resolution
         
         // add all components to this current PlayMode panel in order
-        add(mainCapture);
+       
         add(guitarImg);
         add(scoreCounterLabel);
         add(streakCounterLabel);
@@ -120,13 +123,17 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
                     boolean full = false; // dictating whether the strings are full or not
                     for (int i = 0; i < 6; i++) { //loop through notes
                         for (int j = 0; j < notes.get(i).size(); j++) {
-                            Note currNote = notes.get(i).get(j); // retrive note needed
+                            currNote = notes.get(i).get(j); // retrive note needed
                             currNote.move(); // move the retrieved note
                             currNote.repaint(); // update the graphic
                             if (!currNote.isMissed()) {}// if the current note was not missed continue
                             else {   
                                 streak=0; // reset the streak
+                                multiplier = 1;
+                                multiplierCounter.setVisible(false);
+                                muliplierLabel.setVisible(false);
                                 streakCounter.setText(Integer.toString(streak)); // update streak label
+                                multiplierCounter.setText(Integer.toString(multiplier)); //update multiplier
                                 break;
                             }
                             if (currNote.isOut()) { // if the current note is out of the frame
@@ -146,7 +153,7 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
                         if (k != 7) { // if the song is not over
                             for (int i = 0; i < 6; i++) { // loop through the array of guitar strings
                                 if (k!= Note.strings[i]) {} else {
-                                    Note newNote = new Note(k); // create a note with teh correct key
+                                    Note newNote = new Note(k); // create a note with the correct key
                                     notes.get(i).add(newNote); // using the index to add it to the correct string
                                     add(newNote); // add the new note to this PlayMode panel
                                     add(guitarImg); // add the background image behind it
@@ -165,25 +172,40 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
 
     @Override
     public void keyPressed(KeyEvent e) { // when a key is pressed
+        
         if (gameState == 1) { // if the game is running
             boolean miss = true; // if note missed
             for (int i = 0; i < 6; i++) { // loop through notes
                 if (subKeys[i] == e.getKeyCode()) { // if correct key is pressed
+                    
                     for (int j = 0; j < notes.get(i).size(); j++) { // look for notes on string
-                        Note currNote = notes.get(i).get(j); // check if note has been hit been hit and store
+                        currNote = notes.get(i).get(j); // check if note has been hit been hit and store
                         if (currNote.isIn()) { // if the note is in the catchbox when key is hit
                             currNote.setYPos(2000); // make the note "dissapear"
                             currNote.repaint(); // repaint
                             notes.get(i).remove(j); // remove so it is no longer checked
                             streak ++; //increment streak
-                            if (streak % 10 == 1 && streak> 9) {//every 10 points in the streak, update the multiplier
-                                multiplier= multiplier*2;//every time the multiplier increases, it doubles
-                            }
-                            score++;//increment score
-                            int newScore = score*multiplier; // multiply score               
-                            scoreCounter.setText(Integer.toString(newScore)); // update score label
-                            score = newScore;
+                            
+                            if(streak>9){
+                                if (streak % 10 == 1) {//every 10 points in the streak, update the multiplier
+                                    multiplier= multiplier*2;//every time the multiplier increases, it doubles
+                                    score += multiplier; //increment score by multiplier
+                                }
+                               score += multiplier;
+                            }    
+                            else{
+                                score++;//increment score by 1
+                            }            
+                            scoreCounter.setText(Integer.toString(score)); // update score label
                             streakCounter.setText(Integer.toString(streak)); //update streak label
+                            if (multiplier ==1) {
+                                multiplierCounter.setVisible(false);
+                                muliplierLabel.setVisible(false);
+                            }
+                            else{
+                                multiplierCounter.setVisible(true);
+                                muliplierLabel.setVisible(true);
+                            }
                             multiplierCounter.setText(Integer.toString(multiplier)); //update multiplier
                             miss = false; // miss is false if in this block
                             break;
@@ -194,6 +216,8 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
             if (miss) { // if the player accidentally hits another key/ wrong key
                 streak = 0; //reset streak
                 multiplier = 1; //reset multiplier
+                multiplierCounter.setVisible(false);
+                muliplierLabel.setVisible(false);
                 streakCounter.setText(Integer.toString(streak)); // update streak label
                 multiplierCounter.setText(Integer.toString(multiplier)); //update multiplier
             }
@@ -201,8 +225,10 @@ public final class PlayMode extends JPanel implements KeyListener { // declare c
     }
     // needed for keylistener abstraction
     @Override
-    public void keyTyped(KeyEvent e) { }
+    public void keyTyped(KeyEvent e) {}
     // needed for keylistener abstraction
     @Override
-    public void keyReleased(KeyEvent e) { }
+    public void keyReleased(KeyEvent e) {
+    
+    }
 }

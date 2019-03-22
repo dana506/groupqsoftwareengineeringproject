@@ -245,7 +245,7 @@ public class Main extends JFrame implements EscapeButtonListener, StrumBarListen
             }
 
             else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnPlay()){
-                JOptionPane.showMessageDialog(this, "PLAY button clicked");
+                PlayView e = new PlayView();
             }
 
             else if (buttons.get(defaultButtonPosition) == slashViewPanel.getBtnExit()){
