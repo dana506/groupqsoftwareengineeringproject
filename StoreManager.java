@@ -5,7 +5,7 @@ import java.net.Socket;
 /**
  * 
  * @author Dana Buzatu
- * 
+ * Store Manager, here acts as server
  *
  */
 
