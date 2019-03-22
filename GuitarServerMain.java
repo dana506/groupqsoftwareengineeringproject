@@ -7,7 +7,7 @@
 // *@author Dana Buzatu
 // *Guitar Sever, here acts as a client, receiving bundles from Store Manager Mode (acting as server)
 // *
-// *
+// */
 //
 //public class GuitarServerMain {
 //
